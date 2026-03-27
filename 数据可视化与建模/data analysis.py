@@ -28,4 +28,4 @@ def visualize_data(csv_file):
     plt.show()
 
 # 运行可视化
-# visualize_data('douban_top250.csv')
+visualize_data('douban_top250.csv')

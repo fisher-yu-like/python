@@ -18,29 +18,33 @@ def generate_data(num_nodes=200):
 
     # 创建训练掩码：每组只选 5 个点作为已知标签进行训练
     train_mask = torch.zeros(num_nodes, dtype=torch.bool)
-    train_mask[:5] = True
-    train_mask[100:105] = True
+    train_mask[:10] = True
+    train_mask[100:110] = True
 
     return x, adj, labels, train_mask
 
 
 # 2. 定义 GCN 模型
-class GCN(nn.Module):
-    def __init__(self, in_feat, h_feat, out_feat):
+class DeepGCN(nn.Module):
+    def __init__(self, in_feat, h_feat, out_feat, num_layers=8):
         super().__init__()
-        self.w1 = nn.Linear(in_feat, h_feat)
-        self.w2 = nn.Linear(h_feat, out_feat)
+        self.layers = nn.ModuleList()
+        # 堆叠很多层
+        self.layers.append(nn.Linear(in_feat, h_feat))
+        for _ in range(num_layers - 2):
+            self.layers.append(nn.Linear(h_feat, h_feat))
+        self.layers.append(nn.Linear(h_feat, out_feat))
 
     def forward(self, x, adj):
-        # 简单的邻域聚合: A * X * W
-        x = torch.relu(self.w1(torch.mm(adj, x)))
-        x = self.w2(torch.mm(adj, x))
+        for layer in self.layers:
+            # 每一层都在做 A * X * W
+            x = torch.relu(layer(torch.mm(adj, x)))
         return x
 
 
 # 3. 训练流程
 x, adj, labels, train_mask = generate_data()
-model = GCN(16, 8, 2)
+model = DeepGCN(16, 8, 2)
 optimizer = optim.Adam(model.parameters(), lr=0.01)
 criterion = nn.CrossEntropyLoss()
 

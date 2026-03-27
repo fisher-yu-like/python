@@ -5,6 +5,17 @@ import torchvision
 import torchvision.transforms as transforms
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
+import time
+
+# 记录开始时间
+start_time = time.time()
+
+# --- 这里放置你的程序代码 ---
+# 模拟程序运行
+
+# -------------------------
+
+
 # 1. 定义残差块 (Basic Block)
 class BasicBlock(nn.Module):
     def __init__(self, in_planes, planes, stride=1):
@@ -97,9 +108,14 @@ def train_model(num_blocks_list, epochs=5):
     return history
 
 # --- 3. 执行实验并绘图 ---
-num_blocks_to_test = [1, 2, 3, 4, 5]
+num_blocks_to_test = [1,2,3,4,5]
 results = train_model(num_blocks_to_test, epochs=5) # 建议跑10轮看趋势
+# 记录结束时间
+end_time = time.time()
 
+# 计算差值
+duration = end_time - start_time
+print(f"程序运行耗时: {duration:.4f} 秒")
 plt.figure(figsize=(10, 6))
 for label, losses in results.items():
     plt.plot(range(1, len(losses)+1), losses, marker='o', label=label)

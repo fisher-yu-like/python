@@ -1,5 +1,5 @@
-# 基于兴趣的GCN学习记录
-##  two weeks
+# 基于兴趣的GCN和ResNet论文复现学习记录
+## GCN (一周)
 
 ### 一、起源
 - 在课上接触到深度学习的算法
@@ -8,6 +8,7 @@
 
 ### 二、论文
 - Semi-Supervised Classification with Graph Convolutional Networks (ICLR 2017)
+- [论文链接](https://arxiv.org/abs/1609.02907)
 - 问题：英语水平不够，只能读懂大致意思，不得要领
 - 解决：用Gemini等AI大模型进行辅助学习和翻译，下面是我对此论文的理解：
 
@@ -292,3 +293,25 @@ print(f"\nFinal Test Accuracy: {acc_test:.4f}")
 PS：一些值得关注的点:
 - optimizer = optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
 - 优化器用来优化W权重
+
+### 四、应用
+- 建模仿真: 构建 200 节点的合成拓扑图，模拟高内聚、低耦合的非欧几里得（Non-Euclidean）社交网络结构。
+- 半监督学习: 在仅提供 5\% 标注数据的极端条件下，利用 GCN 的邻域聚合算子实现监督信号在图拓扑中的有效传播。
+- 可视化分析: 使用 t-SNE 技术将高维节点表征降维至 2D 空间，验证了模型在隐空间中的聚类一致性，并改变标注数据占比多次实验
+- 5%标签运行结果如图
+- ![5%](re5.png)
+- 10%标签运行结果如图
+- ![10%](re10.png)
+- 可见标签占比越高，运行结果越好
+- 在模型中采用的是论文的两层GCN模型，增加层数到10层，发现报错，增加层数到8层结果如图
+- ![8](8layers.png)
+- 可见出现了过平滑现象，由于层数过多，导致样本特征趋于归一化，那么如何解决过平滑现象呢？
+
+## ResNet 
+### 一、起源
+- 在对于GCN的研究时发现出现了过平滑现象，网络层数过深，过度迭代聚合，图的链接过于稠密
+- 其中的一种解决方法就是ResNet,于是我开始进行第二篇论文的复现和研究
+### 二、论文
+- Deep Residual Learning for Image Recognition
+- [论文链接](https://arxiv.org/pdf/1512.03385)
+- 
